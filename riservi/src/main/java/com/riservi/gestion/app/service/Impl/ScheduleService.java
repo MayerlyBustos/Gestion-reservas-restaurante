@@ -7,6 +7,8 @@ import com.riservi.gestion.app.service.dtos.ScheduleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 public class ScheduleService implements IScheduleService {
@@ -16,7 +18,8 @@ public class ScheduleService implements IScheduleService {
 
     @Override
     public Schedule findById(int scheduleId) {
-        return null;
+        Optional<Schedule> schedule = scheduleRepository.findById(scheduleId);
+        return schedule.orElse(null);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.riservi.gestion.app.entity.Reservation;
 import com.riservi.gestion.app.repository.IReservationRepository;
 import com.riservi.gestion.app.service.IReservationService;
 import com.riservi.gestion.app.service.dtos.ReservationDto;
+import com.riservi.gestion.app.service.dtos.ReservationRequestDto;
 import com.riservi.gestion.app.service.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,27 +27,36 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public Reservation insertReservation(ReservationDto reservationDto) {
+    public ReservationDto insertReservation(Reservation reservation) {
+    if(reservation != null){
+        Reservation data = reservationRepository.save(reservation);
+        return Util.mappearReservationDto(data);
+
+     }
         return null;
     }
 
     @Override
     public ReservationDto findById(int reservationId) {
         Optional<Reservation> data = reservationRepository.findById(reservationId);
-        if(data.isPresent()){
-            return Util.mappearReservation(data.get());
-        }
-        return null;
+        return data.map(Util::mappearReservation).orElse(null);
     }
 
     @Override
-    public ReservationDto findByCustomerId(int customerId) {
-        
-        return null;
-    }
+    public List<ReservationDto> findByCustomerId(int customerId) {
+            List<Reservation> data = reservationRepository.findByCustomerId(customerId);
+            if(!data.isEmpty()){
+                return Util.mappearReservation(data);
+            }
+            return null;
+        }
 
     @Override
     public ReservationDto findByScheduleId(int scheduleId) {
+        Reservation data = reservationRepository.findByScheduleId(scheduleId);
+        if(data != null){
+            return Util.mappearReservation(data);
+        }
         return null;
     }
 
@@ -59,4 +69,5 @@ public class ReservationService implements IReservationService {
     public void deleteReservation(int reservationId) {
 
     }
+
 }

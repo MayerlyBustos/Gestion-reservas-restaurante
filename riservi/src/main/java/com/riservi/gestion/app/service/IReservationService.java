@@ -8,11 +8,12 @@ import java.util.List;
 public interface IReservationService {
 
     List<ReservationDto> getAll();
-    Reservation insertReservation(ReservationDto reservationDto);
+
+    ReservationDto insertReservation(Reservation requestDto);
 
     ReservationDto findById(int reservationId);
 
-    ReservationDto findByCustomerId(int customerId);
+    List<ReservationDto> findByCustomerId(int customerId);
 
     ReservationDto findByScheduleId(int scheduleId);
 

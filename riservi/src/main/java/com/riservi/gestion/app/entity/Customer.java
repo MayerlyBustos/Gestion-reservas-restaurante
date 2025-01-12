@@ -3,7 +3,8 @@ package com.riservi.gestion.app.entity;
 
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="customers")
@@ -19,7 +20,8 @@ public class Customer {
 
     private String numberPhone;
 
-    private List<Reservation> reservations;
+    private Set<Reservation> reservations = new HashSet<>(0);
+
 
     public Customer() {
     }
@@ -70,12 +72,13 @@ public class Customer {
         this.numberPhone = numberPhone;
     }
 
-//    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-//    public List<Reservation> getReservations() {
-//        return reservations;
-//    }
-//
-//    public void setReservations(List<Reservation> reservations) {
-//        this.reservations = reservations;
-//    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
+    }
 }

@@ -7,4 +7,6 @@ public interface ICustomerService {
 
     Customer createCustomer(CustomerDto customerDto);
 
+    Customer findById(int customerId);
+
 }

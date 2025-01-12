@@ -1,19 +1,19 @@
 package com.riservi.gestion.app.contollers;
 
 
+import com.riservi.gestion.app.entity.Customer;
 import com.riservi.gestion.app.entity.Reservation;
+import com.riservi.gestion.app.entity.Schedule;
 import com.riservi.gestion.app.service.ICustomerService;
 import com.riservi.gestion.app.service.IReservationService;
 import com.riservi.gestion.app.service.IScheduleService;
 import com.riservi.gestion.app.service.dtos.ReservationDto;
-import org.apache.logging.log4j.message.Message;
+import com.riservi.gestion.app.service.dtos.ReservationRequestDto;
+import com.riservi.gestion.app.service.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,4 +49,45 @@ public class ReservationController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<ReservationDto>> getByCustomerId(@PathVariable("customerId") Integer customerId){
+        List<ReservationDto> reservationDto = reservationService.findByCustomerId(customerId);
+        if(reservationDto != null){
+            return ResponseEntity.ok(reservationDto);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/schedule/{scheduleId}")
+    public ResponseEntity<ReservationDto> getByScheduleId(@PathVariable("scheduleId") Integer scheduleId){
+        ReservationDto reservationDto = reservationService.findByScheduleId(scheduleId);
+        if(reservationDto != null){
+            return ResponseEntity.ok(reservationDto);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<ReservationDto> saveReservation(@RequestBody ReservationRequestDto dtoRequest){
+        if(dtoRequest != null && dtoRequest.getCustomerId() > 0 && dtoRequest.getScheduleId() > 0
+              && dtoRequest.getReservationDate() != null) {
+            ReservationDto reservation = reservationService.insertReservation(validateCustomerAndScheduler(dtoRequest));
+            return ResponseEntity.status(HttpStatus.CREATED).body(reservation);
+
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    private Reservation validateCustomerAndScheduler(ReservationRequestDto dtoRequest) {
+       Customer customer = customerService.findById(dtoRequest.getCustomerId());
+       Schedule schedule = scheduleService.findById(dtoRequest.getScheduleId());
+        Reservation reservation = new Reservation();
+
+        if (customer != null && schedule != null) {
+            reservation.setCustomer(customer);
+            reservation.setSchedule(schedule);
+            reservation.setReservationDate(Util.convertToDate(dtoRequest.getReservationDate()));
+        }
+        return reservation;
+    }
 }
