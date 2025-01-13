@@ -2,8 +2,8 @@ package com.riservi.gestion.app.entity;
 
 import javax.persistence.*;
 
-import java.sql.Time;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name="schedules")
@@ -11,9 +11,9 @@ public class Schedule {
 
     private int scheduleId;
 
-    private Date date;
+    private LocalDate date;
 
-    private Date hour;
+    private LocalTime hour;
 
     private int available;
 
@@ -33,25 +33,25 @@ public class Schedule {
         this.scheduleId = scheduleId;
     }
 
-    @Temporal(TemporalType.DATE)
+
     @Column(name = "date")
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    @Temporal(TemporalType.TIME)
     @Column(name = "hour")
-    public Date getHour() {
+    public LocalTime getHour() {
         return hour;
     }
 
-    public void setHour(Date hour) {
+    public void setHour(LocalTime hour) {
         this.hour = hour;
     }
+
 
     @Column(name = "available", length = 1)
     public int getAvailable() {

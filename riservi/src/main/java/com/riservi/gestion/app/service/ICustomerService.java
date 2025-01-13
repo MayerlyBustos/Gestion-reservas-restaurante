@@ -9,4 +9,9 @@ public interface ICustomerService {
 
     Customer findById(int customerId);
 
+    Customer findByEmail(String email);
+
+
+    Customer saveCustomer(CustomerDto customerDto);
+
 }

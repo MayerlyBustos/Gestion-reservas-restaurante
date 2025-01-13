@@ -79,7 +79,7 @@ public class Util {
         if (schedule != null) {
             dto.setScheduleId(schedule.getScheduleId());
             dto.setDate(schedule.getDate());
-            dto.setHour(convertToLocaTime(schedule.getHour()));
+            dto.setHour(schedule.getHour());
             dto.setAvailable(schedule.getAvailable());
         }
         return dto;
@@ -90,7 +90,7 @@ public class Util {
         if (scheduleDto != null) {
             schedule.setScheduleId(scheduleDto.getScheduleId());
             schedule.setDate(scheduleDto.getDate());
-            schedule.setHour(convertToLocaTime(scheduleDto.getHour()));
+            schedule.setHour(scheduleDto.getHour());
             schedule.setAvailable(scheduleDto.getAvailable());
         }
         return schedule;

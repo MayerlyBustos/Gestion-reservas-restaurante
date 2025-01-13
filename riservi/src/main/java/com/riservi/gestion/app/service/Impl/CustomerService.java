@@ -4,6 +4,7 @@ import com.riservi.gestion.app.entity.Customer;
 import com.riservi.gestion.app.repository.ICustomerRepository;
 import com.riservi.gestion.app.service.ICustomerService;
 import com.riservi.gestion.app.service.dtos.CustomerDto;
+import com.riservi.gestion.app.service.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +24,15 @@ public class CustomerService implements ICustomerService {
     public Customer findById(int customerId) {
         Optional<Customer> customer = customerRepository.findById(customerId);
         return customer.orElse(null);
+    }
+
+    @Override
+    public Customer findByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
+
+    @Override
+    public Customer saveCustomer(CustomerDto customerDto) {
+        return customerRepository.save(Util.mappearCustomer(customerDto));
     }
 }

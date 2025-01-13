@@ -1,6 +1,7 @@
 package com.riservi.gestion.app.service;
 
 import com.riservi.gestion.app.entity.Reservation;
+import com.riservi.gestion.app.service.dtos.ReservationDayDto;
 import com.riservi.gestion.app.service.dtos.ReservationDto;
 
 import java.util.List;
@@ -17,7 +18,9 @@ public interface IReservationService {
 
     ReservationDto findByScheduleId(int scheduleId);
 
-    void updateReservation(ReservationDto reservationDto);
+    List<ReservationDayDto> listByDay(String day);
+
+    String updateReservation(int id, int schedule);
 
     void deleteReservation(int reservationId);
 }

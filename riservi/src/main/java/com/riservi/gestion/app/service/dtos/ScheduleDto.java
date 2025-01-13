@@ -1,15 +1,15 @@
 package com.riservi.gestion.app.service.dtos;
 
-import java.sql.Time;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class ScheduleDto {
 
     private int scheduleId;
 
-    private Date date;
+    private LocalDate date;
 
-    private Time hour;
+    private LocalTime hour;
 
     private int available;
 
@@ -21,19 +21,19 @@ public class ScheduleDto {
         this.scheduleId = scheduleId;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public Time getHour() {
+    public LocalTime getHour() {
         return hour;
     }
 
-    public void setHour(Time hour) {
+    public void setHour(LocalTime hour) {
         this.hour = hour;
     }
 
