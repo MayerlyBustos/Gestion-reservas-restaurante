@@ -5,12 +5,13 @@ import com.riservi.gestion.app.service.dtos.ScheduleDto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public interface IScheduleService {
 
     Schedule findById(int scheduleId);
 
-    Schedule findByAvailable(int available);
+    List<Schedule> findByAvailable(String day);
 
     Schedule findByDate(String date);
 

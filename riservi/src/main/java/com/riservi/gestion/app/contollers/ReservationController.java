@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,15 +33,7 @@ public class ReservationController {
 
     @Autowired
     private IScheduleService scheduleService;
-
-    @GetMapping("/list")
-    public ResponseEntity<List<ReservationDto>> getAll(){
-        List<ReservationDto> reservationList = scheduleService.findByDate()
-    if(reservationList == null || reservationList.isEmpty()){
-        return ResponseEntity.ok(Collections.emptyList());
-    }
-    return ResponseEntity.ok(reservationList);
-    }
+    
 
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDto> getById(@PathVariable("id") Integer id){
@@ -71,7 +64,7 @@ public class ReservationController {
 
     @PostMapping("/add")
     public ResponseEntity<ReservationDto> saveReservation(@RequestBody ReservationRequestDto dtoRequest){
-            ReservationDto message = new ReservationDto();
+        ReservationDto message = new ReservationDto();
         if(dtoRequest != null && dtoRequest.getName() != null && dtoRequest.getEmail() != null
                 && dtoRequest.getDate() != null && dtoRequest.getHour() != null) {
             ReservationDto reservation = reservationService.insertReservation(validateCustomerAndScheduler(dtoRequest));
@@ -90,7 +83,7 @@ public class ReservationController {
         List<ReservationDayDto> reservationDayDto = new ArrayList<>();
         List<ReservationDayDto> results = reservationService.listByDay(day);
         if(!results.isEmpty()){
-            return ResponseEntity.status(HttpStatus.CREATED).body(results);
+            return ResponseEntity.status(HttpStatus.OK).body(results);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(results);
     }
@@ -123,9 +116,9 @@ public class ReservationController {
     }
 
     private Reservation validateCustomerAndScheduler(ReservationRequestDto dtoRequest) {
-       Customer customer = customerService.findByEmail(dtoRequest.getEmail());
-       Schedule schedule = scheduleService.findByDayHour(dtoRequest.getDate(), dtoRequest.getHour());
-       customer = verifyExistCustomer(customer, dtoRequest);
+        Customer customer = customerService.findByEmail(dtoRequest.getEmail());
+        Schedule schedule = scheduleService.findByDayHour(dtoRequest.getDate(), dtoRequest.getHour());
+        customer = verifyExistCustomer(customer, dtoRequest);
         return  llenarReservation(customer, schedule);
     }
 

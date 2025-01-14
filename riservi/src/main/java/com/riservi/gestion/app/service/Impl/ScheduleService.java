@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -25,7 +26,11 @@ public class ScheduleService implements IScheduleService {
     }
 
     @Override
-    public Schedule findByAvailable(int available) {
+    public List<Schedule> findByAvailable(String day) {
+        if(day != null) {
+            LocalDate date = LocalDate.parse(day);
+            return scheduleRepository.findScheduleAvailable(date, 1);
+        }
         return null;
     }
 
