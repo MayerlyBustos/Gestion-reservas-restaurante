@@ -97,16 +97,17 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public String updateReservation(int id, int scheduleId) {
+    public ReservationDto updateReservation(int id, int scheduleId) {
+        ReservationDto data = new ReservationDto();
         try {
         LocalDateTime date = LocalDateTime.now();
         reservationRepository.updateReservation(scheduleId, id, date);
-
+        data.setReservationId(id);
         } catch (Exception e){
             System.out.println(e.getMessage());
             return null;
         }
-        return "La reservación se ha actualizado. ID: " + id;
+        return data;
     }
 
     @Override

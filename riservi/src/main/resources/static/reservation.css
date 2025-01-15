@@ -164,3 +164,52 @@ button {
       text-decoration: none;
       cursor: pointer;
     }
+
+    table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th, td {
+                padding: 8px 12px;
+                text-align: center;
+                border: 1px solid #ddd;
+            }
+
+            th {
+                background-color: #f2f2f2;
+            }
+
+            tr:hover {
+                background-color: #f1f1f1;
+            }
+
+            .btn {
+                padding: 5px 10px;
+                margin: 5px;
+                border: none;
+                cursor: pointer;
+                color: white;
+                border-radius: 5px;
+            }
+
+            .btn-edit {
+                background-color: #ffc107;
+            }
+
+            .btn-delete {
+                background-color: #dc3545;
+            }
+
+            .btn-edit:hover {
+                background-color: #e0a800;
+            }
+
+            .btn-delete:hover {
+                background-color: #c82333;
+            }
+
+            .pagination {
+                justify-content: center;
+            }

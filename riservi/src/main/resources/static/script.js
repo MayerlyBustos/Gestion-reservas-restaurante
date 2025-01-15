@@ -49,11 +49,12 @@ function closeModal() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Reserva realizada:", data.message);
+            console.log("Result:", data);
             showModal(data.message);
 
             const formData = new FormData(document.getElementById("reservationForm"));
             popup.style.display = 'none';
+            location.reload();
         })
         .catch(error => {
             console.error("Error al realizar la reserva:", error);
@@ -92,10 +93,10 @@ function closeModal() {
         }
 
 
-       function cargarHoras() {
+    function cargarHoras() {
 
        const date = document.getElementById('date').value;
-        const url = `http://localhost:8080/riservi/listByDay?date=${date}`;
+       const url = `http://localhost:8080/riservi/listByDay?date=${date}`;
 
 
     fetch(url)
@@ -122,7 +123,9 @@ function closeModal() {
                    .catch(error => {
                        console.error('Error al cargar las horas:', error);
                    });
-           }
+        }
 
            document.getElementById('date').addEventListener('change', cargarHoras);
+
+
 

@@ -1,17 +1,23 @@
-package com.riservi.gestion.app.service.dtos;
+package com.riservi.gestion.app.contollers.dtos;
+
+import com.riservi.gestion.app.service.dtos.ReservationDto;
 
 public class MessageDao {
 
+    private String code;
+
     private String message;
 
-    private String code;
+    private ReservationDto reservationDto;
+
 
     public MessageDao() {
     }
 
-    public MessageDao(String message, String code) {
-        this.message = message;
+    public MessageDao(String code, String message, ReservationDto reservationDto) {
         this.code = code;
+        this.message = message;
+        this.reservationDto = reservationDto;
     }
 
     public String getMessage() {
@@ -29,4 +35,6 @@ public class MessageDao {
     public void setCode(String code) {
         this.code = code;
     }
+
+
 }

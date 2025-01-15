@@ -16,6 +16,7 @@
     <div class="button-container" id="btn-reserva">
         <button id="openPopupBtn" type="button">Nueva</button>
         <button type="button" class="btn btn-secondary btn-lg" onclick="cargarReservas()">Reservas</button>
+        <div id="tablaReservas" class="mt-4"></div>
     </div>
 
 
@@ -76,7 +77,20 @@
         </div>
     </div>
 
+    <div id="editarReservaModal" style="display:none;">
+        <form id="editarReservaForm">
+            <label for="nombreCliente">Nombre:</label>
+            <input type="text" id="nombreCliente" name="nombreCliente">
+            <label for="fechaReserva">Fecha:</label>
+            <input type="date" id="fechaReserva" name="fechaReserva">
+            <button type="submit">Guardar cambios</button>
+            <button type="button" onclick="cerrarModal()">Cerrar</button>
+        </form>
+    </div>
+
+
 
     <script src="script.js"></script>
+    <script src="onload.js"></script>
 </body>
 </html>

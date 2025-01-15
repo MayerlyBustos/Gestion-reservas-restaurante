@@ -20,7 +20,7 @@ public interface IReservationService {
 
     List<ReservationDayDto> listByDay(String day);
 
-    String updateReservation(int id, int schedule);
+    ReservationDto updateReservation(int id, int schedule);
 
     void deleteReservation(int reservationId);
 }

@@ -3,7 +3,7 @@ package com.riservi.gestion.app.service.dtos;
 import java.time.LocalDateTime;
 
 
-public class ReservationDto extends MessageRtaDao{
+public class ReservationDto {
 
     private int reservationId;
 
