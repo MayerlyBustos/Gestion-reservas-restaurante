@@ -101,29 +101,89 @@ function editarReserva(id) {
     alert(`Editar reserva con ID: ${id} (Nombre: ${reserva.customer.name})`);
 }
 
+
+function openEditForm(reservationId) {
+    const reservation = reservations.find(res => res.id === reservationId);
+
+    if (!reservation) {
+        alert("Reserva no encontrada.");
+        return;
+    }
+
+
+    const currentDate = reservation.date;
+    const currentHour = reservation.hour;
+
+    document.getElementById('editForm').style.display = 'block';
+
+    cargarHoras('fechaReserva', 'newHour');
+}
+
+
+function submitEditForm(reservationId) {
+    const newScheduleId = document.getElementById('newHour').value;
+
+    const data = {
+        scheduleId: newScheduleId
+    };
+
+    fetch(`http://localhost:8080/riservi/update/${reservationId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Reserva actualizada correctamente.');
+
+        document.getElementById('editForm').style.display = 'none';
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error al actualizar la reserva:', error);
+        alert('Hubo un error al actualizar la reserva.');
+    });
+}
+
 function eliminarReserva(id) {
     const confirmacion = confirm("¿Estás seguro de que deseas eliminar esta reserva?");
-    if (confirmacion) {
-        reservas = reservas.filter(reserva => reserva.reservationId !== id);
 
-        mostrarReservas(paginaActual);
-        mostrarPaginacion();
+    if (confirmacion) {
+        fetch(`http://localhost:8080/riservi/delete/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                reservas = reservas.filter(reserva => reserva.reservationId !== id);
+                mostrarReservas(paginaActual);
+                mostrarPaginacion();
+                alert("Reserva eliminada con éxito.");
+            } else {
+                alert("Hubo un problema al eliminar la reserva.");
+            }
+        })
+        .catch(error => {
+            console.error("Error al eliminar la reserva:", error);
+            alert("No se pudo eliminar la reserva. Intenta de nuevo más tarde.");
+        });
     }
 }
+
 
 
 function editarReserva(id) {
     const reserva = reservas.find(r => r.reservationId === id);
 
-    document.getElementById('nombreCliente').value = reserva.customer.name;
     document.getElementById('fechaReserva').value = reserva.schedule.date;
+    document.getElementById('newtime').value = reserva.schedule.time;
 
-    document.getElementById('editarReservaModal').style.display = 'block';
+    document.getElementById('editForm').style.display = 'block';
 
-}
-
-function cerrarModal() {
-    document.getElementById('editarReservaModal').style.display = 'none';
 }
 
 cargarReservas();

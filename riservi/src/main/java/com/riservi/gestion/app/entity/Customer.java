@@ -73,7 +73,7 @@ public class Customer {
     }
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     public Set<Reservation> getReservations() {
         return reservations;
     }

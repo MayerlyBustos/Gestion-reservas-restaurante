@@ -93,19 +93,22 @@ function closeModal() {
         }
 
 
-    function cargarHoras() {
-
-       const date = document.getElementById('date').value;
-       const url = `http://localhost:8080/riservi/listByDay?date=${date}`;
-
+function cargarHoras(dateElementId, hourElementId) {
+    const date = document.getElementById(dateElementId).value;
+    const url = `http://localhost:8080/riservi/schedule/listByDay?date=${date}`;
 
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            const selectElement = document.getElementById('hour');
+            const selectElement = document.getElementById(hourElementId);
             selectElement.innerHTML = '';
-            const hours = data.map(item => item.hour);
 
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Selecciona hora';
+            selectElement.appendChild(defaultOption);
+
+            const hours = data.map(item => item.hour);
             if (hours.length > 0) {
                 hours.forEach(hour => {
                     const option = document.createElement('option');
@@ -113,19 +116,27 @@ function closeModal() {
                     option.textContent = hour;
                     selectElement.appendChild(option);
                 });
-            }  else {
-                           const option = document.createElement('option');
-                           option.value = '';
-                           option.textContent = 'No hay horario disponible';
-                           selectElement.appendChild(option);
-                       }
-                   })
-                   .catch(error => {
-                       console.error('Error al cargar las horas:', error);
-                   });
-        }
+            } else {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'No hay horario disponible';
+                selectElement.appendChild(option);
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar las horas:', error);
+            alert('Hubo un error al cargar los horarios disponibles.');
+        });
+}
 
-           document.getElementById('date').addEventListener('change', cargarHoras);
+document.getElementById('date').addEventListener('change', function() {
+    cargarHoras('date', 'hour');
+});
+
+document.getElementById('fechaReserva').addEventListener('change', function() {
+    cargarHoras('fechaReserva', 'newtime');
+});
+
 
 
 

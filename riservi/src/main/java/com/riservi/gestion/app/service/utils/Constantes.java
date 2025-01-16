@@ -24,4 +24,15 @@ public class Constantes {
     public static final String UPDATE = "Reserva actualizada con éxito!";
 
     public static final String UPDATE_ERROR = "Error, no se ha actualizado la reserva.";
+
+    public static final String DELETE = "La reserva ha sido eliminada.";
+
+    public static final String DEL_ERROR = "Error al intentar eliminar la reserva.";
+
+    public static final String SCHEDULE_ERROR = "Horario no válido.";
+
+    public static final String CUSTOMER_ERROR = "No existe cliente.";
 }
+
+
+

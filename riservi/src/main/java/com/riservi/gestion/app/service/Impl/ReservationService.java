@@ -30,21 +30,21 @@ public class ReservationService implements IReservationService {
     @Override
     public List<ReservationDto> getAll() {
         List<Reservation> reservations = reservationRepository.findAll();
-        return  Util.mappearReservation(reservations);
+        return Util.mappearReservation(reservations);
     }
 
     @Override
     public ReservationDto insertReservation(Reservation reservation) {
-    if(reservation != null){
-        Reservation data = reservationRepository.save(reservation);
-        if(data.getSchedule() != null){
-            Schedule schedule = data.getSchedule();
-            schedule.setAvailable(0);
-            scheduleRepository.save(schedule);
-        }
-        return Util.mappearReservationDto(data);
+        if (reservation != null) {
+            Reservation data = reservationRepository.save(reservation);
+            if (data.getSchedule() != null) {
+                Schedule schedule = data.getSchedule();
+                schedule.setAvailable(0);
+                scheduleRepository.save(schedule);
+            }
+            return Util.mappearReservationDto(data);
 
-     }
+        }
         return null;
     }
 
@@ -56,17 +56,17 @@ public class ReservationService implements IReservationService {
 
     @Override
     public List<ReservationDto> findByCustomerId(int customerId) {
-            List<Reservation> data = reservationRepository.findByCustomerId(customerId);
-            if(!data.isEmpty()){
-                return Util.mappearReservation(data);
-            }
-            return null;
+        List<Reservation> data = reservationRepository.findByCustomerId(customerId);
+        if (!data.isEmpty()) {
+            return Util.mappearReservation(data);
         }
+        return null;
+    }
 
     @Override
     public ReservationDto findByScheduleId(int scheduleId) {
         Reservation data = reservationRepository.findByScheduleId(scheduleId);
-        if(data != null){
+        if (data != null) {
             return Util.mappearReservation(data);
         }
         return null;
@@ -76,7 +76,7 @@ public class ReservationService implements IReservationService {
     public List<ReservationDayDto> listByDay(String day) {
         List<Object[]> listReservations = new ArrayList<>();
         List<ReservationDayDto> dtos = new ArrayList<>();
-        if(day != null) {
+        if (day != null) {
             LocalDate date = LocalDate.parse(day);
             listReservations = reservationRepository.findReservationsByDay(date);
 
@@ -87,12 +87,12 @@ public class ReservationService implements IReservationService {
                 String numberPhone = (String) row[3];
                 LocalTime hour = (LocalTime) row[4];
                 String fullName = name + " " + lastName;
-                ReservationDayDto dto = new ReservationDayDto(reservationId, fullName , numberPhone, hour);
+                ReservationDayDto dto = new ReservationDayDto(reservationId, fullName, numberPhone, hour);
                 dtos.add(dto);
             }
 
         }
-            return dtos;
+        return dtos;
 
     }
 
@@ -100,10 +100,10 @@ public class ReservationService implements IReservationService {
     public ReservationDto updateReservation(int id, int scheduleId) {
         ReservationDto data = new ReservationDto();
         try {
-        LocalDateTime date = LocalDateTime.now();
-        reservationRepository.updateReservation(scheduleId, id, date);
-        data.setReservationId(id);
-        } catch (Exception e){
+            LocalDateTime date = LocalDateTime.now();
+            reservationRepository.updateReservation(scheduleId, id, date);
+            data.setReservationId(id);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
         }
@@ -111,8 +111,25 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public void deleteReservation(int reservationId) {
+    public boolean deleteReservation(int reservationId) {
+        try {
+            Optional<Reservation> reservation = reservationRepository.findById(reservationId);
+            if (reservation.isPresent()) {
+                Schedule schedule = reservation.get().getSchedule();
+                gestionarSchedule(schedule);
+                reservationRepository.deleteById(reservationId);
+            }
 
+
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private void gestionarSchedule(Schedule schedule) {
+        schedule.setAvailable(1);
+        scheduleRepository.save(schedule);
     }
 
 }

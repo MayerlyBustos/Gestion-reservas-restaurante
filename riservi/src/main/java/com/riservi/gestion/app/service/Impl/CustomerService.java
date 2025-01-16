@@ -23,7 +23,10 @@ public class CustomerService implements ICustomerService {
     @Override
     public Customer findById(int customerId) {
         Optional<Customer> customer = customerRepository.findById(customerId);
-        return customer.orElse(null);
+        if (customer.isPresent()) {
+            return customer.get();
+        }
+        return null;
     }
 
     @Override

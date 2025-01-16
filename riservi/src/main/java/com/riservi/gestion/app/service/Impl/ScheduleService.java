@@ -4,6 +4,7 @@ import com.riservi.gestion.app.entity.Schedule;
 import com.riservi.gestion.app.repository.IScheduleRepository;
 import com.riservi.gestion.app.service.IScheduleService;
 import com.riservi.gestion.app.service.dtos.ScheduleDto;
+import com.riservi.gestion.app.service.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,11 @@ public class ScheduleService implements IScheduleService {
     @Override
     public void insertSchedule(ScheduleDto scheduleDto) {
 
+        if (scheduleDto != null) {
+            Schedule entity = Util.mappearSchedule(scheduleDto);
+            scheduleRepository.save(entity);
+
+        }
     }
 
     @Override

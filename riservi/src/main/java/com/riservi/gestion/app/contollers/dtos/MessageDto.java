@@ -2,7 +2,7 @@ package com.riservi.gestion.app.contollers.dtos;
 
 import com.riservi.gestion.app.service.dtos.ReservationDto;
 
-public class MessageDao {
+public class MessageDto {
 
     private String code;
 
@@ -11,10 +11,10 @@ public class MessageDao {
     private ReservationDto reservationDto;
 
 
-    public MessageDao() {
+    public MessageDto() {
     }
 
-    public MessageDao(String code, String message, ReservationDto reservationDto) {
+    public  MessageDto(String code, String message, ReservationDto reservationDto) {
         this.code = code;
         this.message = message;
         this.reservationDto = reservationDto;

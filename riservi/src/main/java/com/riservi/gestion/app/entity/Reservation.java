@@ -31,7 +31,7 @@ public class Reservation {
         this.reservationId = reservationId;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     public Customer getCustomer() {
         return customer;

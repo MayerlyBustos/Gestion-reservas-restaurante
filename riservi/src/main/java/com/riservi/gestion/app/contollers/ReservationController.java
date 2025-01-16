@@ -1,7 +1,9 @@
 package com.riservi.gestion.app.contollers;
 
 
-import com.riservi.gestion.app.contollers.dtos.MessageDao;
+import com.riservi.gestion.app.contollers.dtos.MessageDto;
+import com.riservi.gestion.app.contollers.dtos.ResponseDTO;
+import com.riservi.gestion.app.contollers.dtos.UpdateReservationRequest;
 import com.riservi.gestion.app.entity.Customer;
 import com.riservi.gestion.app.entity.Reservation;
 import com.riservi.gestion.app.entity.Schedule;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,16 +74,16 @@ public class ReservationController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity < MessageDao > saveReservation(@RequestBody ReservationRequestDto dtoRequest){
+    public ResponseEntity <MessageDto> saveReservation(@RequestBody ReservationRequestDto dtoRequest){
         if (dtoRequest != null && dtoRequest.getName() != null && dtoRequest.getEmail() != null
                 && dtoRequest.getDate() != null && dtoRequest.getHour() != null) {
             ReservationDto reservation = reservationService.insertReservation(validateCustomerAndScheduler(dtoRequest));
             if (reservation != null) {
                 return ResponseEntity.status(HttpStatus.CREATED).
-                        body(new MessageDao(Constantes.CREATED, Constantes.CREATED_CODE, reservation));
+                        body(new MessageDto(Constantes.CREATED, Constantes.CREATED_CODE, reservation));
             }
         }
-        return ResponseEntity.badRequest().body(new MessageDao(Constantes.BAD_REQUEST,
+        return ResponseEntity.badRequest().body(new MessageDto(Constantes.BAD_REQUEST,
                 Constantes.NOT_AVAILABLE, null));
     }
 
@@ -94,18 +97,55 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(results);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity < MessageDao > updateReservation(@PathVariable("id") int id, @RequestBody int scheduleId){
-        if (id > 0) {
-            ReservationDto result = reservationService.updateReservation(id, scheduleId);
-            return ResponseEntity.ok(new MessageDao(Constantes.UPDATE, Constantes.SUCCESS_CODE, result));
+    @Transactional
+    @PutMapping("/update/{reservationId}")
+    public ResponseEntity<MessageDto> updateReservation(@PathVariable int reservationId,
+                                                        @RequestBody UpdateReservationRequest request) {
 
+        ReservationDto result = reservationService.findById(reservationId);
+        if(result == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new MessageDto(Constantes.NOT_FOUND, Constantes.NOT_LIST, result));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).
-                body(new MessageDao(Constantes.UPDATE_ERROR, Constantes.BAD_REQUEST, null));
+       Schedule schedule =  scheduleService.findById(request.getScheduleId());
+        if(schedule == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new MessageDto(Constantes.NOT_FOUND, Constantes.SCHEDULE_ERROR, result));
+        }
+
+        if (schedule.getAvailable() == 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDto(Constantes.BAD_REQUEST,
+                    Constantes.NOT_AVAILABLE, null));
+        }
+
+        result.setSchedule(Util.mappearScheduleDto(schedule));
+        schedule.setAvailable(0);
+
+        int idCustomer = result.getCustomer().getCustomerId();
+        Customer customer = customerService.findById(idCustomer);
+        if(customer == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new MessageDto(Constantes.NOT_FOUND, Constantes.CUSTOMER_ERROR, result));
+        }
+        result.setCustomer(Util.mappearCustomerDto(customer));
+
+        reservationService.insertReservation(Util.mapperEntity(result));
+        //scheduleService
+        return ResponseEntity.ok(new MessageDto(Constantes.UPDATE, Constantes.SUCCESS_CODE, result));
+
+
     }
 
 
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity < ResponseDTO > deleteReservation(@PathVariable("id") Integer id){
+        boolean removed = reservationService.deleteReservation(id);
+        if (removed) {
+            return ResponseEntity.ok(new ResponseDTO(Constantes.SUCCESS_CODE, Constantes.DELETE));
+        }
+        return ResponseEntity.badRequest().body(new ResponseDTO(Constantes.BAD_REQUEST, Constantes.DEL_ERROR));
+    }
     private Reservation validateCustomerAndScheduler(ReservationRequestDto dtoRequest) {
         Customer customer = customerService.findByEmail(dtoRequest.getEmail());
         Schedule schedule = scheduleService.findByDayHour(dtoRequest.getDate(), dtoRequest.getHour());
